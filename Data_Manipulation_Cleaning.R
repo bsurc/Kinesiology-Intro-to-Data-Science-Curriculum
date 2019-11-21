@@ -1,5 +1,5 @@
 library(tidyverse)
-dat<-read_csv("~/KineTeaching/Data/Manuscript_Data.csv")
+dat<-read_csv("~/Kinesiology_Teaching/Data/Manuscript_Data.csv")
 dat$Treatment<-c(rep("A",9),rep("B",9),rep("C",9),rep("D",9))
 #Let's check what kind of variable our "Sex" data is being read as
 #How do we want this to be read?
@@ -111,7 +111,7 @@ dat_simple %>%
 
 
 library(tidyr)
-data_long <- gather(dat_simple, condition, measurement, control:cond2, factor_key=TRUE)
+data_long <- gather(dat_simple, condition, measurement, Sex:Treatment, factor_key=TRUE)
 
 
 
