@@ -153,9 +153,6 @@ zzz(dat=dat_simple,Variable_2,Treatment)
 
 
 
-
-
-
 ####Now let's look at a super common....and super annoying problem
 ####Long data......
 
