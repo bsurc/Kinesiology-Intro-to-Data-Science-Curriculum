@@ -102,6 +102,59 @@ dat_simple %>%
   group_by(Treatment) %>%
   summarize(se_Var2 = sd(Variable_2)/sqrt(n()))
 
+# You could imagine that processes like this could get repetitive 
+#if you wanted to do this to a ton of datasets or a ton
+#of variables within a dataset. One common way to make repetitive tasks faster 
+#is to create functions. Let's look at a simple example first
+
+
+fahr_to_kelvin <- function(temp) {
+  kelvin <- ((temp - 32) * (5 / 9)) + 273.15
+  return(kelvin)
+}
+
+#CHALLENGE 4
+#Write a function called kelvin_to_celsius() that takes a 
+#temperature in Kelvin and returns that temperature in Celsius.
+#Hint: To convert from Kelvin to Celsius you subtract 273.15
+
+
+kelvin_to_celsius <- function(temp) {
+  celsius <- temp - 273.15
+  return(celsius)
+}
+
+
+#Challenge 4
+#Now go straight from far to celc
+#combine the previous two
+fahr_to_celsius <- function(temp) {
+  temp_k <- fahr_to_kelvin(temp)
+  result <- kelvin_to_celsius(temp_k)
+  return(result)
+}
+
+
+#ok, now that we know how to make a function, let's do it with
+#our data.
+
+#lets make a function which will calculate and display the standard error
+#of any given variable
+zzz<-function(dat, Variable_2 , Treatment){
+  require("dplyr")
+  x<-dat %>%
+    dplyr::group_by(dat$Treatment)%>%
+    dplyr::summarize(se_Var2 = sd(dat$Variable_2)/sqrt(n()))
+  return(x)
+}
+
+
+zzz(dat=dat_simple,Variable_2,Treatment)
+
+
+
+
+
 
 ####Now let's look at a super common....and super annoying problem
 ####Long data......
@@ -111,21 +164,15 @@ dat_simple %>%
 
 
 library(tidyr)
-data_long <- gather(dat_simple, condition, measurement, Sex:Treatment, factor_key=TRUE)
+data_long <- gather(dat_simple, Measurment, Value, Sex:Treatment, factor_key=TRUE)
+
+#ok, so this is a common way that people output data and 
+#it's the worst thing ever for analysis
+#why is this not good for analysis?
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+#this might seem really simple, but knowing that these functions exist
+#will save you days of pulling our your hair
+data_wide <- spread(data_long, Measurment, Value)
 
 
