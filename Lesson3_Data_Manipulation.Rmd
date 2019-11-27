@@ -9,22 +9,265 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+# Introduction
+There is a common misconception that analyzing data and modeling are time consuming and difficult to do. In reality, analyzing data is the easy part of doing science. Often times the most difficult part of a research project is manipulating and cleaning your data so it is ready for analysis. In this lesson, we will go over how to simple data manipulation/cleaning using the `dplyr` and `tidyr` packages. Both of these packages are also part of the `tidyverse` suite of packages whih contains the `ggplot2` package which we used during the last lesson.
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+In this lesson, we will go over.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+1. Recoding data
+2. Subsetting dataframes
+3. Data processing through piping 
+4. Grouping by a categorical variable
+5. Creating functions to speed up repetitive tasks
+6. Changing data between long and wide formats
 
-```{r cars}
-summary(cars)
+# Learning Objectives
+* LO1
+* LO2
+* LO3
+* LO4
+* LO6
+
+# Content
+
+First let's load the pakages we will use during this lesson
+
+```{r}
+library(tidyverse)
 ```
 
-## Including Plots
+Now let's load the data
+Keep in mind that your file path will likely be different than the file path shown below
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+dat<-read_csv("~/Kinesiology_Teaching/Data/Manuscript_Data.csv")
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Let's make a dummy `Treatment' variable that we will use for our facets.
+
+We're going to imagine that each of our 36 participants got either `Treatment` A, B, C, or D.
+
+```{r}
+dat$Treatment<-c(rep("A",9),rep("B",9),rep("C",9),rep("D",9))
+```
+
+
+Let's check what kind of variable our "Sex" data is being read as
+
+How do we want this to be read?
+
+```{r}
+typeof(dat$Sex)
+```
+
+
+Check what the values are
+
+```{r}
+unique(dat$Sex)
+```
+
+Is this how we should be reading `Sex` data for analyses?
+
+Probably not!
+
+Likely we want `Sex` to be a categorical variable that has the values Male or Female.
+
+There are __MANY__ ways to change this.
+
+Here we will show you a particularly easy one from the `dplyr` package
+
+```{r}
+dat$Sex<-as.character(dat$Sex)
+```
+
+
+Let's Check that that did what we want it to do
+
+Note that below we call `dplyr::` before we run the `recode` function. We don't have to do this, but it's good practice if your function also exists within other packages.
+
+```{r}
+dplyr::recode(dat$Sex, "1" = "Male", "2" = "Female", .default = NA_character_)
+```
+
+Great, that's working!
+Now let's actually change our `Sex` vector (column) in our dataframe
+
+```{r}
+dat$Sex<-dplyr::recode(dat$Sex, "1" = "Male", "2" = "Female", .default = NA_character_)
+```
+
+
+Lets also rename some of the quantitative variables in our dataframe so that they are easier to deal with
+
+```{r}
+names(dat)[3]<-"Variable_1"
+names(dat)[4]<-"Variable_2"
+```
+
+
+Lets make it a bit more simple and only include the columns we want. 
+
+We will do this using `dplyr`
+
+```{r}
+dat_simple<-select(dat, Subject,Sex,Variable_1,Variable_2,Treatment)
+```
+
+
+You can imagine that if we had more than 1 function, nesting them could be quite cumbersome. To get around this, we can use pipes!
+
+```{r}
+dat_simple<-dat%>%
+  select(Subject,Sex,Variable_1,Variable_2,Treatment)
+```
+
+
+Imagine we wanted to do the same subsetting above, but also filter by a variable
+
+```{r}
+dat_simple_female<-dat%>%
+  select(Subject,Sex,Variable_1,Variable_2,Treatment)%>%
+  filter(Sex == "Female")
+```
+
+
+__CHALLENGE 1__
+Write a single command (which can span multiple lines and includes pipes) that will produce a dataframe that has the male values for only `Treatment` & `Subject`.
+
+
+Here's the solution. 
+Note that the order of `filter` and `select` must be switched from before.
+
+```{r}
+
+dat_Challenge_1<-dat%>%
+  filter(Sex == "Male")%>%
+  select(Subject,Treatment)
+```
+
+
+#CHALLENGE 2
+#Write a single command (which can span multiple lines and includes pipes) 
+#that will produce a dataframe that has the values from treatments C & D
+#Where Variable_2 is above 45 and contains just the treatment and variable2 columns  
+#note the OR | operator and the %in% operator
+
+dat_Challenge_2<-dat%>%
+  filter(Treatment %in% c("C","D"))%>%
+  filter(Variable_2 > 45)%>%
+  select(Variable_2,Treatment)
+
+dat_Challenge_2<-dat%>%
+  filter(Treatment == "C" | Treatment == "D")%>%
+  filter(Variable_2 > 30)%>%
+  select(Variable_2,Treatment)
+
+#Let's look at grouping 
+mean(dat_simple$Variable_2)
+
+#what if we wanted to do this by treatment?
+dat_simple%>%
+  group_by(Treatment)%>%
+  summarize(mean_Var_2 = mean(Variable_2))
+
+#CHALLENGE 3
+# do the same thing, but get the median of Variable 1 for males and females
+dat_simple%>%
+  group_by(Sex)%>%
+  summarize(med_Var_1 = median(Variable_1))
+
+#this is cool, but we can do tons of stuff all at the same time
+dat_simple%>%
+  group_by(Treatment)%>%
+  summarize(mean_Var1 = mean(Variable_1),
+            sd_Var1 = sd(Variable_1),
+            mean_Var2 = mean(Variable_2),
+            sd_Var2 = sd(Variable_2))
+
+#A common thing you might want to do with your data is count things. 
+#We can do this with dplyr
+dat_simple %>%
+  filter(Variable_2 >= 45) %>%
+  count(Treatment, sort = TRUE)
+
+#notice that the count produces an "n" for us?
+#this is useful, it can be used even without calling "count"
+#one reason we might want to use the number of observations 
+#is in the standard error
+
+dat_simple %>%
+  group_by(Treatment) %>%
+  summarize(se_Var2 = sd(Variable_2)/sqrt(n()))
+
+# You could imagine that processes like this could get repetitive 
+#if you wanted to do this to a ton of datasets or a ton
+#of variables within a dataset. One common way to make repetitive tasks faster 
+#is to create functions. Let's look at a simple example first
+
+
+fahr_to_kelvin <- function(temp) {
+  kelvin <- ((temp - 32) * (5 / 9)) + 273.15
+  return(kelvin)
+}
+
+#CHALLENGE 4
+#Write a function called kelvin_to_celsius() that takes a 
+#temperature in Kelvin and returns that temperature in Celsius.
+#Hint: To convert from Kelvin to Celsius you subtract 273.15
+
+
+kelvin_to_celsius <- function(temp) {
+  celsius <- temp - 273.15
+  return(celsius)
+}
+
+
+#Challenge 4
+#Now go straight from far to celc
+#combine the previous two
+fahr_to_celsius <- function(temp) {
+  temp_k <- fahr_to_kelvin(temp)
+  result <- kelvin_to_celsius(temp_k)
+  return(result)
+}
+
+
+#ok, now that we know how to make a function, let's do it with
+#our data.
+
+#lets make a function which will calculate and display the standard error
+#of any given variable
+zzz<-function(dat, Variable_2 , Treatment){
+  require("dplyr")
+  x<-dat %>%
+    dplyr::group_by(dat$Treatment)%>%
+    dplyr::summarize(se_Var2 = sd(dat$Variable_2)/sqrt(n()))
+  return(x)
+}
+
+
+zzz(dat=dat_simple,Variable_2,Treatment)
+
+
+
+####Now let's look at a super common....and super annoying problem
+####Long data......
+
+#first, our data is already in a beautiful wide format..
+#Let's mess it up
+
+
+library(tidyr)
+data_long <- gather(dat_simple, Measurment, Value, Sex:Treatment, factor_key=TRUE)
+
+#ok, so this is a common way that people output data and 
+#it's the worst thing ever for analysis
+#why is this not good for analysis?
+
+
+#this might seem really simple, but knowing that these functions exist
+#will save you days of pulling our your hair
+data_wide <- spread(data_long, Measurment, Value)
+
+
