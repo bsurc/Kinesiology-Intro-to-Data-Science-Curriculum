@@ -9,22 +9,296 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+# Introduction
+Plotting your data is the most effective way of communicating complex results and getting others to understand why you reserch matters! Plotting your data is also a good first stop to make sure everything looks okay. Not to mention, it can be pretty fun!
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+There are many ways to plot data in R, a lot of people actually consider R to be _the_ premier platform for plotting data! In this lesson we will use a package called `ggplot2` to plot our data. ggplot2 is part of a group of packages called the `tidyverse`. We will use some other `tidyverse` packages in the following lessons. In this lesson, we will look at four different ways we might want to look at our data.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+1. The distribution of the data
+2. Examine a continuous variable by a categorical variable
+3. Examine a continuous variable by a continuous variable
+4. Facet our plots by a categorical variable
 
-```{r cars}
-summary(cars)
+# Learning Objectives
+* LO1
+* LO2
+* LO3
+* LO4
+* LO6
+
+# Content
+### Load and clean up the data a bit
+
+First we need to load the packages we will use in this lesson.
+```{r}
+library(tidyverse)
+library(ggthemes)
 ```
 
-## Including Plots
+Next let's load the data. Your data likely lives inside of a diffecent file path than the one displayed below. 
 
-You can also embed plots, for example:
+Note that the `read_csv()` function comes from the `tidyverse` packages that we loaded above.
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+dat<-read_csv("~/Kinesiology_Teaching/Data/Manuscript_Data.csv")
+```
+Now that we have loaded the data, let's check it out using one of the following methods that we learned in the previous lesson.
+
+```{r}
+#str(dat)
+#head(dat)
+#View(dat)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+### Examining the distribution of the data
+
+First Let's make a very simple plot
+
+```{r}
+ggplot(dat, aes( x=`20kg_PSvGRF_SS`))+
+  geom_histogram()+theme_few()
+```
+
+Now let's change the number of bins from the default.
+R may have already printed you a warning message telling you to do this when you made the last plot
+
+```{r}
+ggplot(dat, aes( x=`20kg_PSvGRF_SS`))+
+  geom_histogram(bins=10)+theme_few()
+```
+
+What do you think will happen if we try 100 bins?
+
+```{r}
+ggplot(dat, aes( x=`20kg_PSvGRF_SS`))+
+  geom_histogram(bins=100)+theme_few()
+```
+
+
+We can also customize the color. See what happens when you run the following
+```{r}
+#ggplot(dat, aes( x=`20kg_PSvGRF_SS`))+
+  #geom_histogram(color=red)+theme_few()
+```
+
+That didnt work! Why?
+
+Red needs to be in quotes since we want R to recognize that it's a word, not a value we have saved in our global environment
+
+```{r}
+ggplot(dat, aes( x=`20kg_PSvGRF_SS`))+
+  geom_histogram(color='red')+theme_few()
+```
+
+That looks a bit weird. That's because the `color()` function only makes the outlines of the plot colored for some plot types. 
+
+The function that we were likely looking for is `fill()`.
+
+```{r}
+ggplot(dat, aes( x=`20kg_PSvGRF_SS`))+
+  geom_histogram(fill='red', bins=10)+theme_few()
+```
+
+That's more like it!
+
+This plot still isn't the greatest thing in the world though. One obvious thing we should change are the axis labels.
+
+```{r}
+ggplot(dat, aes( x=`20kg_PSvGRF_SS`))+
+  geom_histogram(fill='red', bins=10)+theme_few()+
+xlab("Something I Don't Understand")+
+  ylab("Number of Observations")
+```
+
+Now let's add a title
+
+```{r}
+ggplot(dat, aes( x=`20kg_PSvGRF_SS`))+
+  geom_histogram(fill='red', bins=10)+theme_few()+
+  xlab("Something I Don't Understand")+
+  ylab("Number of Observations")+
+  ggtitle("Good Title")
+```
+
+Fixup our text a bit
+
+```{r}
+ggplot(dat, aes( x=`20kg_PSvGRF_SS`))+
+  geom_histogram(fill='red', bins=10)+theme_few()+
+  xlab("Something I Don't Understand")+
+  ylab("Number of Observations")+
+  ggtitle("Good Title")+
+theme(text=element_text(size=20),
+      axis.text = element_text(size=20, color="black"),
+      plot.title = element_text(lineheight=.8, face="bold",hjust=0.5))
+```
+
+Now, the Y axis ticks don't make sense for count data. We want them to be discrete numbers. Let's specify where we want the tick marks.
+
+```{r}
+ggplot(dat, aes( x=`20kg_PSvGRF_SS`))+
+  geom_histogram(fill='red', bins=10)+theme_few()+
+  xlab("Something I Don't Understand")+
+  ylab("Number of Observations")+
+  ggtitle("Good Title")+
+  theme(text=element_text(size=20),
+        axis.text = element_text(size=20, color="black"),
+        plot.title = element_text(lineheight=.8, face="bold",hjust=0.5))+
+  scale_y_continuous(breaks=c(1,3, 5, 7,9))
+```
+
+### Examine a continuous variable by a categorical variable
+
+Even though the plots we're about to make may _look_ more complicated, we'll see that the code that generates them is actually pretty similar to what's above.
+
+Let's look at the distribution of the `20kg_PSvGRF_SS` variable, broken up by Sex. A good way to do this is a boxplot.
+
+```{r}
+ggplot(dat, aes(x=as.character(Sex), y=`20kg_PSvGRF_SS`))+
+  geom_boxplot()+theme_few()
+```
+
+
+What if we want to look at this same variable for each participant. Would it make sense to use a boxplot for this? 
+
+No! There's no distribution of data, only one measurement for each participant.
+
+Let's use points instead.
+
+```{r}
+ggplot(dat, aes(x=as.character(Subject), y=`20kg_PSvGRF_SS`))+
+  geom_point()+theme_few()
+```
+
+We can change the shape of the points pretty easily. Try whatever your favorite number is!
+```{r}
+ggplot(dat, aes(x=as.character(Subject), y=`20kg_PSvGRF_SS`))+
+  geom_point(shape=4)+theme_few()
+```
+
+Another way to look at continuous variables by certain categories is by using density plots.
+
+Notice here that we change the colors by using a HEX code. The colors displayed below are colorblind friendly and b/w print safe. Feel free to steal these!
+
+Lastly, note that now we assign a 'p' variable, then make our plot. This is standard syntax that many people use to minimize keystrokes when making multiple plots. 
+
+```{r}
+p <- ggplot(dat, aes(`20kg_PSvGRF_SS`))
+p + geom_density(aes(fill=as.character(Sex)), alpha=1/4)+
+  theme_bw()+ #show color brewer
+  scale_fill_manual(values=c("#1f78b4","#b2df8a"),labels=c("Male","Female"),
+                     name=("Gender")) 
+```
+
+
+
+### Examine a continuous variable by a continuous variable
+ggplot(dat, aes(x= `20kg_LR_SS`, y=`20kg_PSvGRF_SS`))+
+  geom_point()
+
+This is ok, lets add a trend line
+
+```{r}
+ggplot(dat, aes(x= `20kg_LR_SS`, y=`20kg_PSvGRF_SS`))+
+  geom_point()+
+  geom_smooth(method= "lm")+
+  theme_classic()
+```
+
+See if you can make the dots bigger on your own!
+
+```{r}
+ggplot(dat, aes(x= `20kg_LR_SS`, y=`20kg_PSvGRF_SS`))+
+  geom_point(size=5)+
+  geom_smooth(method= "lm")+
+  theme_classic()
+```
+
+That was easy, now try to color the points by sex.
+
+```{r}
+#ggplot(dat, aes(x= `20kg_LR_SS`, y=`20kg_PSvGRF_SS`))+
+ # geom_point(aes(color=Sex))+
+  #geom_smooth(method= "lm")+
+  #theme_classic()
+```
+
+
+Well that didnt work. Why not?
+
+Our `Sex` variable is saved as an integer. We need R to recognize that `Sex` is a category!
+
+```{r}
+ggplot(dat, aes(x= `20kg_LR_SS`, y=`20kg_PSvGRF_SS`))+
+  geom_point(aes(color=as.character(Sex)))+
+  geom_smooth(method= "lm")+
+  theme_classic()
+```
+
+Let's make the trendlines by gender too
+
+```{r}
+ggplot(dat, aes(x= `20kg_LR_SS`, y=`20kg_PSvGRF_SS`))+
+  geom_point(aes(color=as.character(Sex)))+
+  geom_smooth(aes(color=as.character(Sex)),method= "lm")+
+  theme_classic()
+```
+
+
+Our legend needs some love. Let's also change out of this terrible stock color scheme.
+
+```{r}
+ggplot(dat, aes(x= `20kg_LR_SS`, y=`20kg_PSvGRF_SS`))+
+  geom_point(aes(color=as.character(Sex)))+
+  geom_smooth(aes(color=as.character(Sex)),method= "lm")+
+  theme_classic()+ #show color brewer
+scale_color_manual(values=c("#1f78b4","#b2df8a"),labels=c("Male","Female"),
+                              name=("Gender")) 
+  
+```
+
+## Facet our plots by a categorical variable
+
+Let's make a dummy `Treatment' variable that we will use for our facets.
+
+We're going to imagine that each of our 36 participants got either `Treatment` A, B, C, or D. 
+
+```{r}
+dat$Treatment<-c(rep("A",9), rep("B",9),rep("C",9),rep("D",9))    
+```
+
+Make sure that worked. It should be the final column in the data now.
+
+```{r}
+names(dat)
+```
+
+
+Now that that's done, let's get faceting!
+```{r}
+ggplot(dat, aes(x= `20kg_LR_SS`, y=`20kg_PSvGRF_SS`))+
+  geom_point(aes(color=as.character(Sex)))+
+  geom_smooth(aes(color=as.character(Sex)),method= "lm")+
+  facet_wrap( ~ Treatment, ncol=2)+
+  theme_bw()+ #show color brewer
+  scale_color_manual(values=c("#1f78b4","#b2df8a"),labels=c("Male","Female"),
+                     name=("Gender"))
+```
+
+
+We can do the same thing with the density pllts we made before
+
+Notice that the X variable is changed here. This one just looked better than the other one.
+
+
+```{r}
+p <- ggplot(dat, aes(`25kg_AnkleStiff_SS`))
+p + geom_density(aes(fill=as.character(Sex)), alpha=1/4)+
+  facet_wrap( ~ Treatment, ncol=2)+
+  theme_bw()+ #show color brewer
+  scale_fill_manual(values=c("#1f78b4","#b2df8a"),labels=c("Male","Female"),
+                    name=("Gender")) 
+```
+
+__Activity:___ Make any plot, show your partner, have them write the code that think was used to make it
+
