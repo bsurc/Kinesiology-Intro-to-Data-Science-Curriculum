@@ -51,6 +51,7 @@ We're going to imagine that each of our 36 participants got either `Treatment` A
 dat$Treatment<-c(rep("A",9),rep("B",9),rep("C",9),rep("D",9))
 ```
 
+### Recoding data
 
 Let's check what kind of variable our "Sex" data is being read as
 
@@ -106,6 +107,9 @@ names(dat)[4]<-"Variable_2"
 ```
 
 
+### Subsetting dataframes
+
+
 Lets make it a bit more simple and only include the columns we want. 
 
 We will do this using `dplyr`
@@ -114,6 +118,7 @@ We will do this using `dplyr`
 dat_simple<-select(dat, Subject,Sex,Variable_1,Variable_2,Treatment)
 ```
 
+### Data processing through piping 
 
 You can imagine that if we had more than 1 function, nesting them could be quite cumbersome. To get around this, we can use pipes!
 
@@ -147,97 +152,127 @@ dat_Challenge_1<-dat%>%
 ```
 
 
-#CHALLENGE 2
-#Write a single command (which can span multiple lines and includes pipes) 
-#that will produce a dataframe that has the values from treatments C & D
-#Where Variable_2 is above 45 and contains just the treatment and variable2 columns  
-#note the OR | operator and the %in% operator
+__CHALLENGE 2__
+Write a single command (which can span multiple lines and includes pipes) that will produce a dataframe that has the values from treatments C & D, where Variable_2 is above 45 and contains just the treatment and variable2 columns.  
 
+Note the OR `|` operator and the `%in%` operator.
+
+
+There are two potential solutions to this challenge. 
+```{r}
 dat_Challenge_2<-dat%>%
   filter(Treatment %in% c("C","D"))%>%
   filter(Variable_2 > 45)%>%
   select(Variable_2,Treatment)
+```
 
+and 
+
+```{r}
 dat_Challenge_2<-dat%>%
   filter(Treatment == "C" | Treatment == "D")%>%
   filter(Variable_2 > 30)%>%
   select(Variable_2,Treatment)
+```
 
-#Let's look at grouping 
+
+### Grouping by a categorical variable
+
+
+Let's look at grouping by different variables.
+Imagine that we wanted to find the mean of `Variable_2` for each `Treatment`.
+
+Remember that we can find the mean of a vector with the `mean()` function.
+
+```{r}
 mean(dat_simple$Variable_2)
+```
 
-#what if we wanted to do this by treatment?
+
+Now let's do this by treatment.
+Note that the `mean_Var_2 =` call just names your summarized variable.
+
+```{r}
 dat_simple%>%
   group_by(Treatment)%>%
   summarize(mean_Var_2 = mean(Variable_2))
+```
 
-#CHALLENGE 3
-# do the same thing, but get the median of Variable 1 for males and females
+
+__CHALLENGE 3__
+Do the same thing, but get the median of Variable 1 for males and females.
+
+```{r}
 dat_simple%>%
   group_by(Sex)%>%
   summarize(med_Var_1 = median(Variable_1))
+```
 
-#this is cool, but we can do tons of stuff all at the same time
+
+This is cool, but we can do tons of stuff all at the same time
+
+```{r}
 dat_simple%>%
   group_by(Treatment)%>%
   summarize(mean_Var1 = mean(Variable_1),
             sd_Var1 = sd(Variable_1),
             mean_Var2 = mean(Variable_2),
             sd_Var2 = sd(Variable_2))
+```
 
-#A common thing you might want to do with your data is count things. 
-#We can do this with dplyr
+
+A common thing you might want to do with your data is count things. We can do this with dplyr.
+
+```{r}
 dat_simple %>%
   filter(Variable_2 >= 45) %>%
   count(Treatment, sort = TRUE)
+```
 
-#notice that the count produces an "n" for us?
-#this is useful, it can be used even without calling "count"
-#one reason we might want to use the number of observations 
-#is in the standard error
+Notice that the count produces an `n` for us? This is useful, it can be used even without calling "count." One reason we might want to use the number of observations is to calculate the standard error.
 
+
+```{r}
 dat_simple %>%
   group_by(Treatment) %>%
   summarize(se_Var2 = sd(Variable_2)/sqrt(n()))
-
-# You could imagine that processes like this could get repetitive 
-#if you wanted to do this to a ton of datasets or a ton
-#of variables within a dataset. One common way to make repetitive tasks faster 
-#is to create functions. Let's look at a simple example first
+```
 
 
+
+### Creating functions to speed up repetitive tasks
+
+
+You could imagine that processes like this could get repetitive if you wanted to do this to a ton of datasets or a ton of variables within a dataset. One common way to make repetitive tasks faster is to create functions. Let's look at a simple example first.
+
+```{r}
 fahr_to_kelvin <- function(temp) {
   kelvin <- ((temp - 32) * (5 / 9)) + 273.15
   return(kelvin)
 }
+```
 
-#CHALLENGE 4
-#Write a function called kelvin_to_celsius() that takes a 
-#temperature in Kelvin and returns that temperature in Celsius.
-#Hint: To convert from Kelvin to Celsius you subtract 273.15
+__CHALLENGE 4__
+Write a function called kelvin_to_celsius() that takes a temperature in Kelvin and returns that temperature in Celsius.
 
+Hint: To convert from Kelvin to Celsius you subtract 273.15
 
-kelvin_to_celsius <- function(temp) {
-  celsius <- temp - 273.15
-  return(celsius)
-}
+__CHALLENGE 5__
+Now go straight from far to celc. Combine the previous two functions.
 
-
-#Challenge 4
-#Now go straight from far to celc
-#combine the previous two
+```{r}
 fahr_to_celsius <- function(temp) {
   temp_k <- fahr_to_kelvin(temp)
   result <- kelvin_to_celsius(temp_k)
   return(result)
 }
+```
 
+Ok, now that we know how to make a function, let's do it with our data.
 
-#ok, now that we know how to make a function, let's do it with
-#our data.
+Lets make a function which will calculate and display the standard error of any given variable.
 
-#lets make a function which will calculate and display the standard error
-#of any given variable
+```{r}
 zzz<-function(dat, Variable_2 , Treatment){
   require("dplyr")
   x<-dat %>%
@@ -245,29 +280,38 @@ zzz<-function(dat, Variable_2 , Treatment){
     dplyr::summarize(se_Var2 = sd(dat$Variable_2)/sqrt(n()))
   return(x)
 }
+```
 
+Now let's test it.
 
+```{r}
 zzz(dat=dat_simple,Variable_2,Treatment)
+```
 
 
-
-####Now let's look at a super common....and super annoying problem
-####Long data......
-
-#first, our data is already in a beautiful wide format..
-#Let's mess it up
+### Changing data between long and wide formats
 
 
+Now let's look at a super common....and super annoying problem
+
+Long data......
+
+First, our data is already in a beautiful wide format..
+Let's mess it up
+
+```{r}
 library(tidyr)
 data_long <- gather(dat_simple, Measurment, Value, Sex:Treatment, factor_key=TRUE)
+```
 
-#ok, so this is a common way that people output data and 
-#it's the worst thing ever for analysis
-#why is this not good for analysis?
+Ok, so this is a common way that people output data and it's the worst thing ever for analysis.
+
+Why is this not good for analysis?
 
 
-#this might seem really simple, but knowing that these functions exist
-#will save you days of pulling our your hair
+This might seem really simple, but it can cause you days of pulling out your hair. Knowing that these functions exist can save you a ton of time.
+
+```{r}
 data_wide <- spread(data_long, Measurment, Value)
-
+```
 

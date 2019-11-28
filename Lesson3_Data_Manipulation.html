@@ -416,6 +416,8 @@ summary {
 <p>Let’s make a dummy `Treatment’ variable that we will use for our facets.</p>
 <p>We’re going to imagine that each of our 36 participants got either <code>Treatment</code> A, B, C, or D.</p>
 <pre class="r"><code>dat$Treatment&lt;-c(rep(&quot;A&quot;,9),rep(&quot;B&quot;,9),rep(&quot;C&quot;,9),rep(&quot;D&quot;,9))</code></pre>
+<div id="recoding-data" class="section level3">
+<h3>Recoding data</h3>
 <p>Let’s check what kind of variable our “Sex” data is being read as</p>
 <p>How do we want this to be read?</p>
 <pre class="r"><code>typeof(dat$Sex)</code></pre>
@@ -443,9 +445,15 @@ summary {
 <p>Lets also rename some of the quantitative variables in our dataframe so that they are easier to deal with</p>
 <pre class="r"><code>names(dat)[3]&lt;-&quot;Variable_1&quot;
 names(dat)[4]&lt;-&quot;Variable_2&quot;</code></pre>
+</div>
+<div id="subsetting-dataframes" class="section level3">
+<h3>Subsetting dataframes</h3>
 <p>Lets make it a bit more simple and only include the columns we want.</p>
 <p>We will do this using <code>dplyr</code></p>
 <pre class="r"><code>dat_simple&lt;-select(dat, Subject,Sex,Variable_1,Variable_2,Treatment)</code></pre>
+</div>
+<div id="data-processing-through-piping" class="section level3">
+<h3>Data processing through piping</h3>
 <p>You can imagine that if we had more than 1 function, nesting them could be quite cumbersome. To get around this, we can use pipes!</p>
 <pre class="r"><code>dat_simple&lt;-dat%&gt;%
   select(Subject,Sex,Variable_1,Variable_2,Treatment)</code></pre>
@@ -458,33 +466,128 @@ names(dat)[4]&lt;-&quot;Variable_2&quot;</code></pre>
 <pre class="r"><code>dat_Challenge_1&lt;-dat%&gt;%
   filter(Sex == &quot;Male&quot;)%&gt;%
   select(Subject,Treatment)</code></pre>
-<p>#CHALLENGE 2 #Write a single command (which can span multiple lines and includes pipes) #that will produce a dataframe that has the values from treatments C &amp; D #Where Variable_2 is above 45 and contains just the treatment and variable2 columns<br />
-#note the OR | operator and the %in% operator</p>
-<p>dat_Challenge_2&lt;-dat%&gt;% filter(Treatment %in% c(“C”,“D”))%&gt;% filter(Variable_2 &gt; 45)%&gt;% select(Variable_2,Treatment)</p>
-<p>dat_Challenge_2&lt;-dat%&gt;% filter(Treatment == “C” | Treatment == “D”)%&gt;% filter(Variable_2 &gt; 30)%&gt;% select(Variable_2,Treatment)</p>
-<p>#Let’s look at grouping mean(dat_simple$Variable_2)</p>
-<p>#what if we wanted to do this by treatment? dat_simple%&gt;% group_by(Treatment)%&gt;% summarize(mean_Var_2 = mean(Variable_2))</p>
-<p>#CHALLENGE 3 # do the same thing, but get the median of Variable 1 for males and females dat_simple%&gt;% group_by(Sex)%&gt;% summarize(med_Var_1 = median(Variable_1))</p>
-<p>#this is cool, but we can do tons of stuff all at the same time dat_simple%&gt;% group_by(Treatment)%&gt;% summarize(mean_Var1 = mean(Variable_1), sd_Var1 = sd(Variable_1), mean_Var2 = mean(Variable_2), sd_Var2 = sd(Variable_2))</p>
-<p>#A common thing you might want to do with your data is count things. #We can do this with dplyr dat_simple %&gt;% filter(Variable_2 &gt;= 45) %&gt;% count(Treatment, sort = TRUE)</p>
-<p>#notice that the count produces an “n” for us? #this is useful, it can be used even without calling “count” #one reason we might want to use the number of observations #is in the standard error</p>
-<p>dat_simple %&gt;% group_by(Treatment) %&gt;% summarize(se_Var2 = sd(Variable_2)/sqrt(n()))</p>
+<p><strong>CHALLENGE 2</strong> Write a single command (which can span multiple lines and includes pipes) that will produce a dataframe that has the values from treatments C &amp; D, where Variable_2 is above 45 and contains just the treatment and variable2 columns.</p>
+<p>Note the OR <code>|</code> operator and the <code>%in%</code> operator.</p>
+<p>There are two potential solutions to this challenge.</p>
+<pre class="r"><code>dat_Challenge_2&lt;-dat%&gt;%
+  filter(Treatment %in% c(&quot;C&quot;,&quot;D&quot;))%&gt;%
+  filter(Variable_2 &gt; 45)%&gt;%
+  select(Variable_2,Treatment)</code></pre>
+<p>and</p>
+<pre class="r"><code>dat_Challenge_2&lt;-dat%&gt;%
+  filter(Treatment == &quot;C&quot; | Treatment == &quot;D&quot;)%&gt;%
+  filter(Variable_2 &gt; 30)%&gt;%
+  select(Variable_2,Treatment)</code></pre>
 </div>
-<div id="you-could-imagine-that-processes-like-this-could-get-repetitive" class="section level1">
-<h1>You could imagine that processes like this could get repetitive</h1>
-<p>#if you wanted to do this to a ton of datasets or a ton #of variables within a dataset. One common way to make repetitive tasks faster #is to create functions. Let’s look at a simple example first</p>
-<p>fahr_to_kelvin &lt;- function(temp) { kelvin &lt;- ((temp - 32) * (5 / 9)) + 273.15 return(kelvin) }</p>
-<p>#CHALLENGE 4 #Write a function called kelvin_to_celsius() that takes a #temperature in Kelvin and returns that temperature in Celsius. #Hint: To convert from Kelvin to Celsius you subtract 273.15</p>
-<p>kelvin_to_celsius &lt;- function(temp) { celsius &lt;- temp - 273.15 return(celsius) }</p>
-<p>#Challenge 4 #Now go straight from far to celc #combine the previous two fahr_to_celsius &lt;- function(temp) { temp_k &lt;- fahr_to_kelvin(temp) result &lt;- kelvin_to_celsius(temp_k) return(result) }</p>
-<p>#ok, now that we know how to make a function, let’s do it with #our data.</p>
-<p>#lets make a function which will calculate and display the standard error #of any given variable zzz&lt;-function(dat, Variable_2 , Treatment){ require(“dplyr”) x&lt;-dat %&gt;% dplyr::group_by(dat<span class="math inline">\(Treatment)%&gt;%  dplyr::summarize(se_Var2 = sd(dat\)</span>Variable_2)/sqrt(n())) return(x) }</p>
-<p>zzz(dat=dat_simple,Variable_2,Treatment)</p>
-<p>####Now let’s look at a super common….and super annoying problem ####Long data……</p>
-<p>#first, our data is already in a beautiful wide format.. #Let’s mess it up</p>
-<p>library(tidyr) data_long &lt;- gather(dat_simple, Measurment, Value, Sex:Treatment, factor_key=TRUE)</p>
-<p>#ok, so this is a common way that people output data and #it’s the worst thing ever for analysis #why is this not good for analysis?</p>
-<p>#this might seem really simple, but knowing that these functions exist #will save you days of pulling our your hair data_wide &lt;- spread(data_long, Measurment, Value)</p>
+<div id="grouping-by-a-categorical-variable" class="section level3">
+<h3>Grouping by a categorical variable</h3>
+<p>Let’s look at grouping by different variables. Imagine that we wanted to find the mean of <code>Variable_2</code> for each <code>Treatment</code>.</p>
+<p>Remember that we can find the mean of a vector with the <code>mean()</code> function.</p>
+<pre class="r"><code>mean(dat_simple$Variable_2)</code></pre>
+<pre><code>## [1] 45.56986</code></pre>
+<p>Now let’s do this by treatment. Note that the <code>mean_Var_2 =</code> call just names your summarized variable.</p>
+<pre class="r"><code>dat_simple%&gt;%
+  group_by(Treatment)%&gt;%
+  summarize(mean_Var_2 = mean(Variable_2))</code></pre>
+<pre><code>## # A tibble: 4 x 2
+##   Treatment mean_Var_2
+##   &lt;chr&gt;          &lt;dbl&gt;
+## 1 A               41.6
+## 2 B               46.7
+## 3 C               45.5
+## 4 D               48.5</code></pre>
+<p><strong>CHALLENGE 3</strong> Do the same thing, but get the median of Variable 1 for males and females.</p>
+<pre class="r"><code>dat_simple%&gt;%
+  group_by(Sex)%&gt;%
+  summarize(med_Var_1 = median(Variable_1))</code></pre>
+<pre><code>## # A tibble: 2 x 2
+##   Sex    med_Var_1
+##   &lt;chr&gt;      &lt;dbl&gt;
+## 1 Female      2.58
+## 2 Male        2.75</code></pre>
+<p>This is cool, but we can do tons of stuff all at the same time</p>
+<pre class="r"><code>dat_simple%&gt;%
+  group_by(Treatment)%&gt;%
+  summarize(mean_Var1 = mean(Variable_1),
+            sd_Var1 = sd(Variable_1),
+            mean_Var2 = mean(Variable_2),
+            sd_Var2 = sd(Variable_2))</code></pre>
+<pre><code>## # A tibble: 4 x 5
+##   Treatment mean_Var1 sd_Var1 mean_Var2 sd_Var2
+##   &lt;chr&gt;         &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+## 1 A              2.79   0.265      41.6    8.02
+## 2 B              2.55   0.256      46.7   13.7 
+## 3 C              2.69   0.246      45.5    7.45
+## 4 D              2.68   0.338      48.5    7.23</code></pre>
+<p>A common thing you might want to do with your data is count things. We can do this with dplyr.</p>
+<pre class="r"><code>dat_simple %&gt;%
+  filter(Variable_2 &gt;= 45) %&gt;%
+  count(Treatment, sort = TRUE)</code></pre>
+<pre><code>## # A tibble: 4 x 2
+##   Treatment     n
+##   &lt;chr&gt;     &lt;int&gt;
+## 1 D             8
+## 2 A             5
+## 3 B             5
+## 4 C             4</code></pre>
+<p>Notice that the count produces an <code>n</code> for us? This is useful, it can be used even without calling “count.” One reason we might want to use the number of observations is to calculate the standard error.</p>
+<pre class="r"><code>dat_simple %&gt;%
+  group_by(Treatment) %&gt;%
+  summarize(se_Var2 = sd(Variable_2)/sqrt(n()))</code></pre>
+<pre><code>## # A tibble: 4 x 2
+##   Treatment se_Var2
+##   &lt;chr&gt;       &lt;dbl&gt;
+## 1 A            2.67
+## 2 B            4.57
+## 3 C            2.48
+## 4 D            2.41</code></pre>
+</div>
+<div id="creating-functions-to-speed-up-repetitive-tasks" class="section level3">
+<h3>Creating functions to speed up repetitive tasks</h3>
+<p>You could imagine that processes like this could get repetitive if you wanted to do this to a ton of datasets or a ton of variables within a dataset. One common way to make repetitive tasks faster is to create functions. Let’s look at a simple example first.</p>
+<pre class="r"><code>fahr_to_kelvin &lt;- function(temp) {
+  kelvin &lt;- ((temp - 32) * (5 / 9)) + 273.15
+  return(kelvin)
+}</code></pre>
+<p><strong>CHALLENGE 4</strong> Write a function called kelvin_to_celsius() that takes a temperature in Kelvin and returns that temperature in Celsius.</p>
+<p>Hint: To convert from Kelvin to Celsius you subtract 273.15</p>
+<p><strong>CHALLENGE 5</strong> Now go straight from far to celc. Combine the previous two functions.</p>
+<pre class="r"><code>fahr_to_celsius &lt;- function(temp) {
+  temp_k &lt;- fahr_to_kelvin(temp)
+  result &lt;- kelvin_to_celsius(temp_k)
+  return(result)
+}</code></pre>
+<p>Ok, now that we know how to make a function, let’s do it with our data.</p>
+<p>Lets make a function which will calculate and display the standard error of any given variable.</p>
+<pre class="r"><code>zzz&lt;-function(dat, Variable_2 , Treatment){
+  require(&quot;dplyr&quot;)
+  x&lt;-dat %&gt;%
+    dplyr::group_by(dat$Treatment)%&gt;%
+    dplyr::summarize(se_Var2 = sd(dat$Variable_2)/sqrt(n()))
+  return(x)
+}</code></pre>
+<p>Now let’s test it.</p>
+<pre class="r"><code>zzz(dat=dat_simple,Variable_2,Treatment)</code></pre>
+<pre><code>## # A tibble: 4 x 2
+##   `dat$Treatment` se_Var2
+##   &lt;chr&gt;             &lt;dbl&gt;
+## 1 A                  3.14
+## 2 B                  3.14
+## 3 C                  3.14
+## 4 D                  3.14</code></pre>
+</div>
+<div id="changing-data-between-long-and-wide-formats" class="section level3">
+<h3>Changing data between long and wide formats</h3>
+<p>Now let’s look at a super common….and super annoying problem</p>
+<p>Long data……</p>
+<p>First, our data is already in a beautiful wide format.. Let’s mess it up</p>
+<pre class="r"><code>library(tidyr)
+data_long &lt;- gather(dat_simple, Measurment, Value, Sex:Treatment, factor_key=TRUE)</code></pre>
+<p>Ok, so this is a common way that people output data and it’s the worst thing ever for analysis.</p>
+<p>Why is this not good for analysis?</p>
+<p>This might seem really simple, but it can cause you days of pulling out your hair. Knowing that these functions exist can save you a ton of time.</p>
+<pre class="r"><code>data_wide &lt;- spread(data_long, Measurment, Value)</code></pre>
+</div>
 </div>
 
 
