@@ -19,21 +19,21 @@ In this lesson, we will go over.
 1. Simple T-tests
 2. ANOVAS
 3. Single variable linear models 
-4. Multivariat linear models 
+4. Multivariate linear models 
 5. Hierarchical linear models
-6. Uing model objects to predict things and validate models.
+6. Using model objects to predict things and validate models.
 
 # Learning Objectives
-* LO1
-* LO2
-* LO3
-* LO4
-* LO6
+* Students should be able to run and interpret simple analyses (T-tests $ ANOVAS)
+* Students should be able to write code to produce linear models
+* Students can look at a plot and describe how a linear model could quantify the visual phenomena
+* Students can make predictions using linear models
+
 
 
 # Content
 
-First let's load the pakages we will use during this lesson
+First let's load the packages we will use during this lesson
 
 ```{r}
 library(tidyverse)
@@ -47,7 +47,7 @@ Keep in mind that your file path will likely be different than the file path sho
 dat<-read_csv("~/Kinesiology_Teaching/Data/Manuscript_Data.csv")
 ```
 
-Let's change the Sex variable to be more represintitive of how we actually think of 'Sex' data.
+Let's change the Sex variable to be more representative of how we actually think of 'Sex' data.
 
 ```{r}
 
@@ -113,7 +113,7 @@ we see here that our p value is very low 5.724e-10, So they are significantly di
 ###ANOVAS
 Now, what if we wanted to compare all three treatments (A,B,C)
 
-It's always a good isea to plot your data before analyzing it
+It's always a good idea to plot your data before analyzing it
 
 ```{r}
 ggplot(dat, aes(x=Treatment, y=Variable_1, color=Sex))+
@@ -131,7 +131,7 @@ summary(fit)
 ```
 
 
-Cool...The group's aren't alll the same...We probably already knew that.
+Cool...The group's aren't all the same...We probably already knew that.
 
 There's a phrase that I like that says.
 
@@ -184,7 +184,7 @@ mean(dat[dat$Treatment=="B",]$Variable_1)
 mean(dat[dat$Treatment=="C",]$Variable_1)
 ```
 
-The parameter estimate (for a standard linear model) tells us how much the dependant variable increases as a result of the independant variables.
+The parameter estimate (for a standard linear model) tells us how much the dependent variable increases as a result of the independent variables.
 
 Compare the means from above to the parameter estimates from the model. How are they the same, how are they different?
 
@@ -207,7 +207,7 @@ hist(residuals(fit))
 
 
 ###Multivariate regression
-We can look at multivariable regressions too
+We can look at multivariate regressions too
 
 Let's look at all of our continuous variables as a predictor for Variable_1.
 
@@ -235,7 +235,7 @@ summary(fit)
 
 We see now that none of our continuous variables are important when we account for Treatment
 
-They are whe we only usse Variable_4 though..This is a good lesson in model selection!
+They are when we only uses Variable_4 though..This is a good lesson in model selection!
 
 
 
@@ -250,7 +250,7 @@ fit<-lm(Variable_1~Sex+Treatment, data=dat)
 summary(fit)
 ```
 
-A better way to do this is to give each sex its own intercept, slope, or both. These will both be more representitive of reality.
+A better way to do this is to give each sex its own intercept, slope, or both. These will both be more representative of reality.
 
 
 Let's plot both

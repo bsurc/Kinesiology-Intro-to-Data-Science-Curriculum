@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Introduction
-Plotting your data is the most effective way of communicating complex results and getting others to understand why you reserch matters! Plotting your data is also a good first stop to make sure everything looks okay. Not to mention, it can be pretty fun!
+Plotting your data is the most effective way of communicating complex results and getting others to understand why you research matters! Plotting your data is also a good first stop to make sure everything looks okay. Not to mention, it can be pretty fun!
 
 There are many ways to plot data in R, a lot of people actually consider R to be _the_ premier platform for plotting data! In this lesson we will use a package called `ggplot2` to plot our data. ggplot2 is part of a group of packages called the `tidyverse`. We will use some other `tidyverse` packages in the following lessons. In this lesson, we will look at four different ways we might want to look at our data.
 
@@ -20,11 +20,10 @@ There are many ways to plot data in R, a lot of people actually consider R to be
 4. Facet our plots by a categorical variable
 
 # Learning Objectives
-* LO1
-* LO2
-* LO3
-* LO4
-* LO6
+* Describe the utility of exploring data through visualization
+* Students can preform basic data manipulation to prepare data sets for plotting
+* Students can identify which types of plots are appropriate for given data types (e.g. boxplots for categories of continuous data)
+* Students know the basic code syntax underlying all ggplots
 
 # Content
 ### Load and clean up the data a bit
@@ -35,7 +34,7 @@ library(tidyverse)
 library(ggthemes)
 ```
 
-Next let's load the data. Your data likely lives inside of a diffecent file path than the one displayed below. 
+Next let's load the data. Your data likely lives inside of a different file path than the one displayed below. 
 
 Note that the `read_csv()` function comes from the `tidyverse` packages that we loaded above.
 
@@ -286,7 +285,7 @@ ggplot(dat, aes(x= `20kg_LR_SS`, y=`20kg_PSvGRF_SS`))+
 ```
 
 
-We can do the same thing with the density pllts we made before
+We can do the same thing with the density plots we made before
 
 Notice that the X variable is changed here. This one just looked better than the other one.
 

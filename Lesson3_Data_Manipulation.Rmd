@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Introduction
-There is a common misconception that analyzing data and modeling are time consuming and difficult to do. In reality, analyzing data is the easy part of doing science. Often times the most difficult part of a research project is manipulating and cleaning your data so it is ready for analysis. In this lesson, we will go over how to simple data manipulation/cleaning using the `dplyr` and `tidyr` packages. Both of these packages are also part of the `tidyverse` suite of packages whih contains the `ggplot2` package which we used during the last lesson.
+There is a common misconception that analyzing data and modeling are time consuming and difficult to do. In reality, analyzing data is the easy part of doing science. Often times the most difficult part of a research project is manipulating and cleaning your data so it is ready for analysis. In this lesson, we will go over how to simple data manipulation/cleaning using the `dplyr` and `tidyr` packages. Both of these packages are also part of the `tidyverse` suite of packages which contains the `ggplot2` package which we used during the last lesson.
 
 In this lesson, we will go over.
 
@@ -22,15 +22,15 @@ In this lesson, we will go over.
 6. Changing data between long and wide formats
 
 # Learning Objectives
-* LO1
-* LO2
-* LO3
-* LO4
-* LO6
+* Students can recode categorical values and column names
+* Students understand the utility and can make use of pipes
+* Students know general `dplyr` functions and can write code using them
+* Students can create simple functions
+* Students can manipulate data from long to wide.
 
 # Content
 
-First let's load the pakages we will use during this lesson
+First let's load the packages we will use during this lesson
 
 ```{r}
 library(tidyverse)
@@ -253,7 +253,7 @@ fahr_to_kelvin <- function(temp) {
 ```
 
 __CHALLENGE 4__
-Write a function called kelvin_to_celsius() that takes a temperature in Kelvin and returns that temperature in Celsius.
+Write a function called kelvin_to_Celsius() that takes a temperature in Kelvin and returns that temperature in Celsius.
 
 Hint: To convert from Kelvin to Celsius you subtract 273.15
 
