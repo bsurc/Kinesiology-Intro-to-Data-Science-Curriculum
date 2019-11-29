@@ -31,14 +31,38 @@ dat$Treatment<-c(rep("A",12),rep("B",12),rep("C",12))
 #Ok, now we should have a treatment variable that may 
 #be reflective of increasing Variable1
 
+#Let's compare two things using a t-test
+
+#Lets compare treatment A to treatment c
+x<-dat%>%filter(Treatment=="A")
+y<-dat%>%filter(Treatment=="C")
+
+#Now that we have two different dataframes, let's compare them
+t.test(x$Variable_1, y$Variable_1)
+
+#we see here that our p value is very low 5.724e-10
+#So they are significantly different.
+
+#Now, what if we wanted to compare all three treatments (A,B,C)
+
+#It's always a good isea to plot your data before analyzing it
+
 ggplot(dat, aes(x=Treatment, y=Variable_1, color=Sex))+
   geom_boxplot()+
   geom_jitter()+
   theme_classic()
 
+#It looks like treatment makes a big difference here. 
+#Let's run an ANOVA to compare 3+ groups
 
 fit <- aov(Variable_1 ~ Treatment, data=dat)
 summary(fit)
+
+#Cool...The group's aren't alll the same...We probably already knew that
+#There's a phrase that I like that says 
+#If there's a real difference, you don't need statistics..this is a good example
+#What we can do though is use a linear model to tell us exactly what
+#the difference is.
 
 
 #linear model
@@ -47,11 +71,34 @@ summary(fit)
 plot(fit)
 hist(residuals(fit)) #this should be relatively normal
 #lm with both continuous
+#why are there only two treatments displayed?
+
+#TreatmentA is the intercept!
+
+fit<-lm(Variable_1~Treatment, data=dat)
+summary(fit)
+
+
+#summary gives us some parameter estimates. What do these mean?
+
+#Let's check out the means to get a better idea
+mean(dat[dat$Treatment=="A",]$Variable_1)
+mean(dat[dat$Treatment=="B",]$Variable_1)
+mean(dat[dat$Treatment=="C",]$Variable_1)
+
+#the parameter estimate (for a standard linear model)
+#tells us how much the dependant variable increases as a result of 
+#the independant variables
+
+#compare the means from above to the parameter estimates from the model
+
+#What about continuous by continuous
 ggplot(dat, aes(x=Variable_4, y=Variable_1))+
   geom_point()+
   geom_smooth(method="lm")+
   theme_classic()
 
+#Let's model what we just saw
 
 fit <- lm(Variable_1 ~ Variable_4, data=dat)
 summary(fit)
@@ -80,20 +127,7 @@ summary(fit)
 
 #Treatment is though.
 
-#why are there only two treatments displayed?
 
-#TreatmentA is the intercept!
-
-fit<-lm(Variable_1~Treatment, data=dat)
-summary(fit)
-
-
-#summary gives us some parameter estimates. What do these mean?
-
-#Let's check out the means to get a better idea
-mean(dat[dat$Treatment=="A",]$Variable_1)
-mean(dat[dat$Treatment=="B",]$Variable_1)
-mean(dat[dat$Treatment=="C",]$Variable_1)
 
 #now control for sex
 #You can make a 3d plot or a 
@@ -122,6 +156,7 @@ summary(fit)
 fit <- lmer(Variable_1 ~ Variable_4+(1|Sex), data=dat)
 summary(fit)
 plot(fit)
+fit<-lm(Variable_1~Variable_4,data=dat)
 
 #show this
 #http://mfviz.com/hierarchical-models/

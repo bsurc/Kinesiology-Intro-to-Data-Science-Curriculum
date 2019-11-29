@@ -1,0 +1,875 @@
+\PassOptionsToPackage{unicode=true}{hyperref} % options for packages loaded elsewhere
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provides euro and other symbols
+\else % if luatex or xelatex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Quantitative Analysis},
+  pdfauthor={Matt Clark},
+  pdfborder={0 0 0},
+  breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-2}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+% set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+
+% https://github.com/rstudio/rmarkdown/issues/337
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+% https://github.com/rstudio/rmarkdown/pull/252
+\usepackage{titling}
+\setlength{\droptitle}{-2em}
+
+\pretitle{\vspace{\droptitle}\centering\huge}
+\posttitle{\par}
+
+\preauthor{\centering\large\emph}
+\postauthor{\par}
+
+\predate{\centering\large\emph}
+\postdate{\par}
+
+\title{Quantitative Analysis}
+\author{Matt Clark}
+\date{11/29/2019}
+
+\begin{document}
+\maketitle
+
+\hypertarget{introduction}{%
+\section{Introduction}\label{introduction}}
+
+R was initially built for analyzing quantitative data. It is still
+considered by many people to be the premier platform for scientific
+analysis. Analysis may seem a bit scary, but we will see that it's
+actually quite easy.
+
+In this lesson, we will go over.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Simple T-tests
+\item
+  ANOVAS
+\item
+  Single variable linear models
+\item
+  Multivariat linear models
+\item
+  Hierarchical linear models
+\item
+  Uing model objects to predict things and validate models.
+\end{enumerate}
+
+\hypertarget{learning-objectives}{%
+\section{Learning Objectives}\label{learning-objectives}}
+
+\begin{itemize}
+\tightlist
+\item
+  LO1
+\item
+  LO2
+\item
+  LO3
+\item
+  LO4
+\item
+  LO6
+\end{itemize}
+
+\hypertarget{content}{%
+\section{Content}\label{content}}
+
+First let's load the pakages we will use during this lesson
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(tidyverse)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## -- Attaching packages ------------------------------ tidyverse 1.2.1 --
+\end{verbatim}
+
+\begin{verbatim}
+## v ggplot2 3.2.1     v purrr   0.3.2
+## v tibble  2.1.3     v dplyr   0.8.3
+## v tidyr   0.8.3     v stringr 1.4.0
+## v readr   1.3.1     v forcats 0.4.0
+\end{verbatim}
+
+\begin{verbatim}
+## -- Conflicts --------------------------------- tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(lme4)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: Matrix
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'Matrix'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:tidyr':
+## 
+##     expand
+\end{verbatim}
+
+Now let's load the data Keep in mind that your file path will likely be
+different than the file path shown below
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dat<-}\KeywordTok{read_csv}\NormalTok{(}\StringTok{"~/Kinesiology_Teaching/Data/Manuscript_Data.csv"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Parsed with column specification:
+## cols(
+##   .default = col_double()
+## )
+\end{verbatim}
+
+\begin{verbatim}
+## See spec(...) for full column specifications.
+\end{verbatim}
+
+Let's change the Sex variable to be more represintitive of how we
+actually think of `Sex' data.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dat}\OperatorTok{$}\NormalTok{Sex<-}\KeywordTok{as.character}\NormalTok{(dat}\OperatorTok{$}\NormalTok{Sex)}
+
+\CommentTok{#now change the vector}
+\NormalTok{dat}\OperatorTok{$}\NormalTok{Sex<-dplyr}\OperatorTok{::}\KeywordTok{recode}\NormalTok{(dat}\OperatorTok{$}\NormalTok{Sex, }\StringTok{"1"}\NormalTok{ =}\StringTok{ "Male"}\NormalTok{, }\StringTok{"2"}\NormalTok{ =}\StringTok{ "Female"}\NormalTok{, }\DataTypeTok{.default =} \OtherTok{NA_character_}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Ok, lets also rename some of the quantitative variables in our dataframe
+so that they are easier to deal with
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{names}\NormalTok{(dat)[}\DecValTok{52}\NormalTok{]<-}\StringTok{"Variable_1"}
+\KeywordTok{names}\NormalTok{(dat)[}\DecValTok{65}\NormalTok{]<-}\StringTok{"Variable_2"}
+\KeywordTok{names}\NormalTok{(dat)[}\DecValTok{75}\NormalTok{]<-}\StringTok{"Variable_3"}
+\KeywordTok{names}\NormalTok{(dat)[}\DecValTok{100}\NormalTok{]<-}\StringTok{"Variable_4"}
+\end{Highlighting}
+\end{Shaded}
+
+Let's get rid of the variables we aren't going to use.
+
+There are many ways to do this, here's two (one is commented out):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#dat<-dat%>%select(Subject, Sex, Variable_1,Variable_2,Variable_3,Variable_4)}
+\NormalTok{dat<-dat[,}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{,}\DecValTok{52}\NormalTok{,}\DecValTok{65}\NormalTok{,}\DecValTok{75}\NormalTok{,}\DecValTok{100}\NormalTok{)]}
+\KeywordTok{head}\NormalTok{(dat)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 6 x 6
+##   Subject Sex    Variable_1 Variable_2 Variable_3 Variable_4
+##     <dbl> <chr>       <dbl>      <dbl>      <dbl>      <dbl>
+## 1       7 Female       43.5       7.53       35.2       48.5
+## 2       8 Male         29.0      12.2        35.2       31.9
+## 3       9 Female       51.4      29.6        29.8       56.9
+## 4      10 Male         56.9      11.6        32.8       46.9
+## 5      11 Male         32.8      15.5        34.1       44.2
+## 6      12 Male         30.1      19.6        46.8       47.7
+\end{verbatim}
+
+We want to see some statistical significance in our analyses. Let's
+order \texttt{Variable\_1}, then create a dummy \texttt{Treatment}
+variable that will hopefully look significant.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dat<-}\KeywordTok{arrange}\NormalTok{(dat, Variable_}\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Now let's add the treatment category
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dat}\OperatorTok{$}\NormalTok{Treatment<-}\KeywordTok{c}\NormalTok{(}\KeywordTok{rep}\NormalTok{(}\StringTok{"A"}\NormalTok{,}\DecValTok{12}\NormalTok{),}\KeywordTok{rep}\NormalTok{(}\StringTok{"B"}\NormalTok{,}\DecValTok{12}\NormalTok{),}\KeywordTok{rep}\NormalTok{(}\StringTok{"C"}\NormalTok{,}\DecValTok{12}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+Ok, now we should have a treatment variable that may be reflective of
+increasing \texttt{Variable\_1}
+
+\#\#\#T-tests Let's compare two things using a t-test
+
+Lets compare treatment A to treatment c
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{x<-dat}\OperatorTok{%>%}\KeywordTok{filter}\NormalTok{(Treatment}\OperatorTok{==}\StringTok{"A"}\NormalTok{)}
+\NormalTok{y<-dat}\OperatorTok{%>%}\KeywordTok{filter}\NormalTok{(Treatment}\OperatorTok{==}\StringTok{"C"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Now that we have two different dataframes, let's compare them with a
+T-test
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{t.test}\NormalTok{(x}\OperatorTok{$}\NormalTok{Variable_}\DecValTok{1}\NormalTok{, y}\OperatorTok{$}\NormalTok{Variable_}\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Welch Two Sample t-test
+## 
+## data:  x$Variable_1 and y$Variable_1
+## t = -10.797, df = 20.739, p-value = 5.724e-10
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -22.30717 -15.09729
+## sample estimates:
+## mean of x mean of y 
+##  36.54730  55.24953
+\end{verbatim}
+
+we see here that our p value is very low 5.724e-10, So they are
+significantly different.
+
+\#\#\#ANOVAS Now, what if we wanted to compare all three treatments
+(A,B,C)
+
+It's always a good isea to plot your data before analyzing it
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggplot}\NormalTok{(dat, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{Treatment, }\DataTypeTok{y=}\NormalTok{Variable_}\DecValTok{1}\NormalTok{, }\DataTypeTok{color=}\NormalTok{Sex))}\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_boxplot}\NormalTok{()}\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_jitter}\NormalTok{()}\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme_classic}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Lesson4_Quantitative_Analysis_files/figure-latex/unnamed-chunk-10-1.pdf}
+
+It looks like treatment makes a big difference here. Let's run an ANOVA
+to compare 3+ groups
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit <-}\StringTok{ }\KeywordTok{aov}\NormalTok{(Variable_}\DecValTok{1} \OperatorTok{~}\StringTok{ }\NormalTok{Treatment, }\DataTypeTok{data=}\NormalTok{dat)}
+\KeywordTok{summary}\NormalTok{(fit)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##             Df Sum Sq Mean Sq F value   Pr(>F)    
+## Treatment    2 2120.1  1060.0   68.41 1.82e-12 ***
+## Residuals   33  511.4    15.5                     
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+Cool\ldots{}The group's aren't alll the same\ldots{}We probably already
+knew that.
+
+There's a phrase that I like that says.
+
+``If there's a real difference, you don't need statistics..this is a
+good example.''
+
+What we \emph{can} do though is use a linear model to tell us exactly
+what the difference is quantitatively.
+
+\hypertarget{linear-models}{%
+\subsubsection{Linear models}\label{linear-models}}
+
+Let's look at the effect that \texttt{Treatment} has on
+\texttt{Variable\_1}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(Variable_}\DecValTok{1} \OperatorTok{~}\StringTok{ }\NormalTok{Treatment, }\DataTypeTok{data=}\NormalTok{dat)}
+\KeywordTok{summary}\NormalTok{(fit)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = Variable_1 ~ Treatment, data = dat)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -7.5593 -3.3471  0.4744  2.2321  7.4651 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)   36.547      1.136  32.162  < 2e-16 ***
+## TreatmentB    10.988      1.607   6.837 8.40e-08 ***
+## TreatmentC    18.702      1.607  11.638 3.19e-13 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 3.936 on 33 degrees of freedom
+## Multiple R-squared:  0.8057, Adjusted R-squared:  0.7939 
+## F-statistic: 68.41 on 2 and 33 DF,  p-value: 1.823e-12
+\end{verbatim}
+
+The \texttt{lm()} function has a built in \texttt{plot()} capability
+that some people think is useful.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot}\NormalTok{(fit)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Lesson4_Quantitative_Analysis_files/figure-latex/unnamed-chunk-13-1.pdf}
+\includegraphics{Lesson4_Quantitative_Analysis_files/figure-latex/unnamed-chunk-13-2.pdf}
+
+\begin{verbatim}
+## hat values (leverages) are all = 0.08333333
+##  and there are no factor predictors; no plot no. 5
+\end{verbatim}
+
+\includegraphics{Lesson4_Quantitative_Analysis_files/figure-latex/unnamed-chunk-13-3.pdf}
+\includegraphics{Lesson4_Quantitative_Analysis_files/figure-latex/unnamed-chunk-13-4.pdf}
+
+Let's also look at our residuals, these should be relatively normal.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{hist}\NormalTok{(}\KeywordTok{residuals}\NormalTok{(fit))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Lesson4_Quantitative_Analysis_files/figure-latex/unnamed-chunk-14-1.pdf}
+
+How do we interpret our model results?
+
+Let's look at \texttt{summary()} again
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit<-}\KeywordTok{lm}\NormalTok{(Variable_}\DecValTok{1}\OperatorTok{~}\NormalTok{Treatment, }\DataTypeTok{data=}\NormalTok{dat)}
+\KeywordTok{summary}\NormalTok{(fit)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = Variable_1 ~ Treatment, data = dat)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -7.5593 -3.3471  0.4744  2.2321  7.4651 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)   36.547      1.136  32.162  < 2e-16 ***
+## TreatmentB    10.988      1.607   6.837 8.40e-08 ***
+## TreatmentC    18.702      1.607  11.638 3.19e-13 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 3.936 on 33 degrees of freedom
+## Multiple R-squared:  0.8057, Adjusted R-squared:  0.7939 
+## F-statistic: 68.41 on 2 and 33 DF,  p-value: 1.823e-12
+\end{verbatim}
+
+Why are there only two treatments displayed?
+
+Treatment\_A is the intercept!
+
+Summary gives us some parameter estimates. What do these mean?
+
+Let's check out the means to get a better idea
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{mean}\NormalTok{(dat[dat}\OperatorTok{$}\NormalTok{Treatment}\OperatorTok{==}\StringTok{"A"}\NormalTok{,]}\OperatorTok{$}\NormalTok{Variable_}\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 36.5473
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{mean}\NormalTok{(dat[dat}\OperatorTok{$}\NormalTok{Treatment}\OperatorTok{==}\StringTok{"B"}\NormalTok{,]}\OperatorTok{$}\NormalTok{Variable_}\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 47.53512
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{mean}\NormalTok{(dat[dat}\OperatorTok{$}\NormalTok{Treatment}\OperatorTok{==}\StringTok{"C"}\NormalTok{,]}\OperatorTok{$}\NormalTok{Variable_}\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 55.24953
+\end{verbatim}
+
+The parameter estimate (for a standard linear model) tells us how much
+the dependant variable increases as a result of the independant
+variables.
+
+Compare the means from above to the parameter estimates from the model.
+How are they the same, how are they different?
+
+What about continuous by continuous. Let's plot it.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggplot}\NormalTok{(dat, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{Variable_}\DecValTok{4}\NormalTok{, }\DataTypeTok{y=}\NormalTok{Variable_}\DecValTok{1}\NormalTok{))}\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{()}\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_smooth}\NormalTok{(}\DataTypeTok{method=}\StringTok{"lm"}\NormalTok{)}\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme_classic}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Lesson4_Quantitative_Analysis_files/figure-latex/unnamed-chunk-17-1.pdf}
+
+Let's model what we just saw
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(Variable_}\DecValTok{1} \OperatorTok{~}\StringTok{ }\NormalTok{Variable_}\DecValTok{4}\NormalTok{, }\DataTypeTok{data=}\NormalTok{dat)}
+\KeywordTok{summary}\NormalTok{(fit)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = Variable_1 ~ Variable_4, data = dat)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -16.2336  -3.5028   0.3521   2.9817  15.9905 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  14.7566     5.7506   2.566   0.0149 *  
+## Variable_4    0.6632     0.1183   5.606  2.8e-06 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 6.342 on 34 degrees of freedom
+## Multiple R-squared:  0.4803, Adjusted R-squared:  0.465 
+## F-statistic: 31.43 on 1 and 34 DF,  p-value: 2.802e-06
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{hist}\NormalTok{(}\KeywordTok{residuals}\NormalTok{(fit))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Lesson4_Quantitative_Analysis_files/figure-latex/unnamed-chunk-18-1.pdf}
+
+\#\#\#Multivariate regression We can look at multivariable regressions
+too
+
+Let's look at all of our continuous variables as a predictor for
+Variable\_1.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit<-}\KeywordTok{lm}\NormalTok{(Variable_}\DecValTok{1}\OperatorTok{~}\NormalTok{Variable_}\DecValTok{4}\OperatorTok{+}\NormalTok{Variable_}\DecValTok{3}\OperatorTok{+}\NormalTok{Variable_}\DecValTok{2}\OperatorTok{+}\NormalTok{Treatment, }\DataTypeTok{data=}\NormalTok{dat)}
+\KeywordTok{summary}\NormalTok{(fit)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = Variable_1 ~ Variable_4 + Variable_3 + Variable_2 + 
+##     Treatment, data = dat)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -6.8312 -3.2235  0.4054  2.5680  7.5444 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept) 36.45726    6.22756   5.854 2.10e-06 ***
+## Variable_4   0.10652    0.12645   0.842 0.406257    
+## Variable_3  -0.10610    0.13695  -0.775 0.444557    
+## Variable_2  -0.02414    0.10044  -0.240 0.811717    
+## TreatmentB   9.31965    2.47048   3.772 0.000711 ***
+## TreatmentC  16.63040    2.65675   6.260 6.76e-07 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 4.037 on 30 degrees of freedom
+## Multiple R-squared:  0.8142, Adjusted R-squared:  0.7832 
+## F-statistic: 26.29 on 5 and 30 DF,  p-value: 4.018e-10
+\end{verbatim}
+
+Note that variable 2 has the highest p value remove that first.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit<-}\KeywordTok{lm}\NormalTok{(Variable_}\DecValTok{1}\OperatorTok{~}\NormalTok{Variable_}\DecValTok{4}\OperatorTok{+}\NormalTok{Variable_}\DecValTok{3}\OperatorTok{+}\NormalTok{Treatment, }\DataTypeTok{data=}\NormalTok{dat)}
+\KeywordTok{summary}\NormalTok{(fit)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = Variable_1 ~ Variable_4 + Variable_3 + Treatment, 
+##     data = dat)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -6.791 -3.289  0.399  2.544  7.526 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept) 36.73930    6.02231   6.101 9.22e-07 ***
+## Variable_4   0.09897    0.12061   0.821 0.418172    
+## Variable_3  -0.11675    0.12759  -0.915 0.367222    
+## TreatmentB   9.42803    2.39177   3.942 0.000429 ***
+## TreatmentC  16.78712    2.53603   6.619 2.13e-07 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 3.975 on 31 degrees of freedom
+## Multiple R-squared:  0.8138, Adjusted R-squared:  0.7898 
+## F-statistic: 33.88 on 4 and 31 DF,  p-value: 6.571e-11
+\end{verbatim}
+
+Now note that the p values for the other variables has changed. How have
+they changed? They got lower! That's why it's important to remove the
+variables one at a time.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit<-}\KeywordTok{lm}\NormalTok{(Variable_}\DecValTok{1}\OperatorTok{~}\NormalTok{Variable_}\DecValTok{4}\OperatorTok{+}\NormalTok{Treatment, }\DataTypeTok{data=}\NormalTok{dat)}
+\KeywordTok{summary}\NormalTok{(fit)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = Variable_1 ~ Variable_4 + Treatment, data = dat)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -7.2672 -3.0126  0.7698  2.2437  7.2071 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept) 33.27228    4.66922   7.126 4.37e-08 ***
+## Variable_4   0.08648    0.11953   0.723 0.474638    
+## TreatmentB   9.74482    2.36056   4.128 0.000244 ***
+## TreatmentC  17.37438    2.44724   7.100 4.70e-08 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 3.965 on 32 degrees of freedom
+## Multiple R-squared:  0.8088, Adjusted R-squared:  0.7909 
+## F-statistic: 45.12 on 3 and 32 DF,  p-value: 1.334e-11
+\end{verbatim}
+
+We see now that none of our continuous variables are important when we
+account for Treatment
+
+They are whe we only usse Variable\_4 though..This is a good lesson in
+model selection!
+
+Now control for sex. You can make a 3d plot or a density plot to plot 2
+variable regressions.
+
+We're not going to show these.
+
+Let's do the same type of multivariate regression as before.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit<-}\KeywordTok{lm}\NormalTok{(Variable_}\DecValTok{1}\OperatorTok{~}\NormalTok{Sex}\OperatorTok{+}\NormalTok{Treatment, }\DataTypeTok{data=}\NormalTok{dat)}
+\KeywordTok{summary}\NormalTok{(fit)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = Variable_1 ~ Sex + Treatment, data = dat)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -6.6966 -2.8492  0.7807  2.6856  8.5435 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)   38.273      1.388  27.579  < 2e-16 ***
+## SexMale       -2.588      1.293  -2.002   0.0538 .  
+## TreatmentB    10.341      1.572   6.578 2.06e-07 ***
+## TreatmentC    18.487      1.542  11.987 2.26e-13 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 3.768 on 32 degrees of freedom
+## Multiple R-squared:  0.8273, Adjusted R-squared:  0.8111 
+## F-statistic:  51.1 on 3 and 32 DF,  p-value: 2.644e-12
+\end{verbatim}
+
+A better way to do this is to give each sex its own intercept, slope, or
+both. These will both be more representitive of reality.
+
+Let's plot both
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggplot}\NormalTok{(dat, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{Variable_}\DecValTok{4}\NormalTok{, }\DataTypeTok{y=}\NormalTok{Variable_}\DecValTok{1}\NormalTok{, }\DataTypeTok{color=}\NormalTok{Sex))}\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{()}\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_smooth}\NormalTok{(}\DataTypeTok{method=}\StringTok{"lm"}\NormalTok{)}\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme_classic}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Lesson4_Quantitative_Analysis_files/figure-latex/unnamed-chunk-23-1.pdf}
+
+We need a new package to fit this model.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit <-}\StringTok{ }\KeywordTok{lmer}\NormalTok{(Variable_}\DecValTok{1} \OperatorTok{~}\StringTok{ }\NormalTok{Variable_}\DecValTok{4}\OperatorTok{+}\NormalTok{(Variable_}\DecValTok{4}\OperatorTok{|}\NormalTok{Sex), }\DataTypeTok{data=}\NormalTok{dat)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## boundary (singular) fit: see ?isSingular
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(fit)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Linear mixed model fit by REML ['lmerMod']
+## Formula: Variable_1 ~ Variable_4 + (Variable_4 | Sex)
+##    Data: dat
+## 
+## REML criterion at convergence: 233.6
+## 
+## Scaled residuals: 
+##      Min       1Q   Median       3Q      Max 
+## -2.53982 -0.59301  0.02442  0.44377  2.48968 
+## 
+## Random effects:
+##  Groups   Name        Variance  Std.Dev. Corr 
+##  Sex      (Intercept) 2.007e+00 1.41671       
+##           Variable_4  2.374e-04 0.01541  -1.00
+##  Residual             3.996e+01 6.32125       
+## Number of obs: 36, groups:  Sex, 2
+## 
+## Fixed effects:
+##             Estimate Std. Error t value
+## (Intercept)  15.0182     5.8450   2.569
+## Variable_4    0.6583     0.1189   5.538
+## 
+## Correlation of Fixed Effects:
+##            (Intr)
+## Variable_4 -0.980
+## convergence code: 0
+## boundary (singular) fit: see ?isSingular
+\end{verbatim}
+
+If we wanted each sex to just have its own intercept.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit <-}\StringTok{ }\KeywordTok{lmer}\NormalTok{(Variable_}\DecValTok{1} \OperatorTok{~}\StringTok{ }\NormalTok{Variable_}\DecValTok{4}\OperatorTok{+}\NormalTok{(}\DecValTok{1}\OperatorTok{|}\NormalTok{Sex), }\DataTypeTok{data=}\NormalTok{dat)}
+\KeywordTok{summary}\NormalTok{(fit)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Linear mixed model fit by REML ['lmerMod']
+## Formula: Variable_1 ~ Variable_4 + (1 | Sex)
+##    Data: dat
+## 
+## REML criterion at convergence: 233.6
+## 
+## Scaled residuals: 
+##     Min      1Q  Median      3Q     Max 
+## -2.5416 -0.5857  0.0297  0.4533  2.4962 
+## 
+## Random effects:
+##  Groups   Name        Variance Std.Dev.
+##  Sex      (Intercept)  0.4124  0.6421  
+##  Residual             40.0085  6.3252  
+## Number of obs: 36, groups:  Sex, 2
+## 
+## Fixed effects:
+##             Estimate Std. Error t value
+## (Intercept)  14.8987     5.7631   2.585
+## Variable_4    0.6606     0.1181   5.592
+## 
+## Correlation of Fixed Effects:
+##            (Intr)
+## Variable_4 -0.980
+\end{verbatim}
+
+{[}\url{http://mfviz.com/hierarchical-models/}{]}{[}Here is a great
+resource explaining heierarchical modeling.{]}
+
+\hypertarget{predictions-and-model-validation}{%
+\subsubsection{Predictions and model
+validation}\label{predictions-and-model-validation}}
+
+Making predictions is a really powerful. We like to be able to predict
+things, but also to gutcheck yourself!
+
+Make a new dataframe with some hypothetical values to put into the model
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{new <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{Variable_4 =} \DecValTok{25}\NormalTok{, }\DataTypeTok{Treatment=}\StringTok{"B"}\NormalTok{, }\DataTypeTok{Sex=}\StringTok{"Male"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Now put it into a predict function
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{predict}\NormalTok{(fit, new)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        1 
+## 31.23722
+\end{verbatim}
+
+\end{document}

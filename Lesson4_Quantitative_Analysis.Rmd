@@ -1,0 +1,303 @@
+---
+title: "Quantitative Analysis"
+author: "Matt Clark"
+date: "11/29/2019"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+R was initially built for analyzing quantitative data. It is still considered by many people to be the premier platform for scientific analysis. Analysis may seem a bit scary, but we will see that it's actually quite easy.  
+
+In this lesson, we will go over.
+
+1. Simple T-tests
+2. ANOVAS
+3. Single variable linear models 
+4. Multivariat linear models 
+5. Hierarchical linear models
+6. Uing model objects to predict things and validate models.
+
+# Learning Objectives
+* LO1
+* LO2
+* LO3
+* LO4
+* LO6
+
+
+# Content
+
+First let's load the pakages we will use during this lesson
+
+```{r}
+library(tidyverse)
+library(lme4)
+```
+
+Now let's load the data
+Keep in mind that your file path will likely be different than the file path shown below
+
+```{r}
+dat<-read_csv("~/Kinesiology_Teaching/Data/Manuscript_Data.csv")
+```
+
+Let's change the Sex variable to be more represintitive of how we actually think of 'Sex' data.
+
+```{r}
+
+dat$Sex<-as.character(dat$Sex)
+
+#now change the vector
+dat$Sex<-dplyr::recode(dat$Sex, "1" = "Male", "2" = "Female", .default = NA_character_)
+```
+
+
+Ok, lets also rename some of the quantitative variables in our dataframe so that they are easier to deal with
+
+```{r}
+names(dat)[52]<-"Variable_1"
+names(dat)[65]<-"Variable_2"
+names(dat)[75]<-"Variable_3"
+names(dat)[100]<-"Variable_4"
+```
+
+Let's get rid of the variables we aren't going to use.
+
+There are many ways to do this, here's two (one is commented out):
+
+```{r}
+#dat<-dat%>%select(Subject, Sex, Variable_1,Variable_2,Variable_3,Variable_4)
+dat<-dat[,c(1,2,52,65,75,100)]
+head(dat)
+```
+
+We want to see some statistical significance in our analyses. Let's order `Variable_1`, then create a dummy `Treatment` variable that will hopefully look significant.
+
+```{r}
+dat<-arrange(dat, Variable_1)
+```
+
+Now let's add the treatment category
+
+```{r}
+dat$Treatment<-c(rep("A",12),rep("B",12),rep("C",12))
+```
+
+Ok, now we should have a treatment variable that may be reflective of increasing `Variable_1`
+
+###T-tests
+Let's compare two things using a t-test
+
+Lets compare treatment A to treatment c
+
+```{r}
+x<-dat%>%filter(Treatment=="A")
+y<-dat%>%filter(Treatment=="C")
+```
+
+
+Now that we have two different dataframes, let's compare them with a T-test
+
+```{r}
+t.test(x$Variable_1, y$Variable_1)
+```
+
+we see here that our p value is very low 5.724e-10, So they are significantly different.
+
+###ANOVAS
+Now, what if we wanted to compare all three treatments (A,B,C)
+
+It's always a good isea to plot your data before analyzing it
+
+```{r}
+ggplot(dat, aes(x=Treatment, y=Variable_1, color=Sex))+
+  geom_boxplot()+
+  geom_jitter()+
+  theme_classic()
+```
+
+It looks like treatment makes a big difference here. 
+Let's run an ANOVA to compare 3+ groups
+
+```{r}
+fit <- aov(Variable_1 ~ Treatment, data=dat)
+summary(fit)
+```
+
+
+Cool...The group's aren't alll the same...We probably already knew that.
+
+There's a phrase that I like that says.
+
+"If there's a real difference, you don't need statistics..this is a good example."
+
+What we _can_ do though is use a linear model to tell us exactly what the difference is quantitatively.
+
+
+### Linear models
+
+Let's look at the effect that `Treatment` has on `Variable_1`.
+
+```{r}
+fit <- lm(Variable_1 ~ Treatment, data=dat)
+summary(fit)
+```
+
+The `lm()` function has a built in `plot()` capability that some people think is useful.
+
+```{r}
+plot(fit)
+```
+
+Let's also look at our residuals, these should be relatively normal.
+```{r}
+hist(residuals(fit))
+```
+
+How do we interpret our model results?
+
+Let's look at `summary()` again
+
+```{r}
+fit<-lm(Variable_1~Treatment, data=dat)
+summary(fit)
+```
+
+
+Why are there only two treatments displayed?
+
+Treatment_A is the intercept!
+
+Summary gives us some parameter estimates. What do these mean?
+
+Let's check out the means to get a better idea
+
+```{r}
+mean(dat[dat$Treatment=="A",]$Variable_1)
+mean(dat[dat$Treatment=="B",]$Variable_1)
+mean(dat[dat$Treatment=="C",]$Variable_1)
+```
+
+The parameter estimate (for a standard linear model) tells us how much the dependant variable increases as a result of the independant variables.
+
+Compare the means from above to the parameter estimates from the model. How are they the same, how are they different?
+
+What about continuous by continuous. Let's plot it.
+
+```{r}
+ggplot(dat, aes(x=Variable_4, y=Variable_1))+
+  geom_point()+
+  geom_smooth(method="lm")+
+  theme_classic()
+```
+
+Let's model what we just saw
+
+```{r}
+fit <- lm(Variable_1 ~ Variable_4, data=dat)
+summary(fit)
+hist(residuals(fit))
+```
+
+
+###Multivariate regression
+We can look at multivariable regressions too
+
+Let's look at all of our continuous variables as a predictor for Variable_1.
+
+```{r}
+fit<-lm(Variable_1~Variable_4+Variable_3+Variable_2+Treatment, data=dat)
+summary(fit)
+```
+
+Note that variable 2 has the highest p value remove that first.
+
+```{r}
+fit<-lm(Variable_1~Variable_4+Variable_3+Treatment, data=dat)
+summary(fit)
+```
+
+
+Now note that the p values for the other variables has changed.
+How have they changed?
+They got lower! That's why it's important to remove the variables one at a time.
+
+```{r}
+fit<-lm(Variable_1~Variable_4+Treatment, data=dat)
+summary(fit)
+```
+
+We see now that none of our continuous variables are important when we account for Treatment
+
+They are whe we only usse Variable_4 though..This is a good lesson in model selection!
+
+
+
+Now control for sex. You can make a 3d plot or a density plot to plot 2 variable regressions.
+
+We're not going to show these.
+
+Let's do the same type of multivariate regression as before.
+
+```{r}
+fit<-lm(Variable_1~Sex+Treatment, data=dat)
+summary(fit)
+```
+
+A better way to do this is to give each sex its own intercept, slope, or both. These will both be more representitive of reality.
+
+
+Let's plot both
+
+```{r}
+ggplot(dat, aes(x=Variable_4, y=Variable_1, color=Sex))+
+  geom_point()+
+  geom_smooth(method="lm")+
+  theme_classic()
+```
+
+We need a new package to fit this model.
+
+```{r}
+fit <- lmer(Variable_1 ~ Variable_4+(Variable_4|Sex), data=dat)
+summary(fit)
+```
+
+If we wanted each sex to just have its own intercept.
+
+```{r}
+fit <- lmer(Variable_1 ~ Variable_4+(1|Sex), data=dat)
+summary(fit)
+```
+
+
+[Here is a great resource explaining heierarchical modeling.](http://mfviz.com/hierarchical-models/)
+
+
+### Predictions and model validation
+
+Making predictions is a really powerful. We like to be able to predict things, but also to gutcheck yourself!
+
+Make a new dataframe with some hypothetical values to put into the model
+
+```{r}
+new <- data.frame(Variable_4 = 25, Treatment="B", Sex="Male")
+```
+
+Now put it into a predict function
+
+```{r}
+predict(fit, new)
+```
+
+
+
+
+
+  
