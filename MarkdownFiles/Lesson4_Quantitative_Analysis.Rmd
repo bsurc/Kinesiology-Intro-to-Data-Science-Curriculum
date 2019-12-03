@@ -196,8 +196,18 @@ ggplot(dat, aes(x=Variable_4, y=Variable_1))+
   geom_smooth(method="lm")+
   theme_classic()
 ```
+One common thing to do is to look at the correlation of two continuous variables.
 
-Let's model what we just saw
+There are lots of different types of correlations. Let's use the most basic one ("pearson" by default).
+
+We can use the `cor()` function for that.
+
+```{r}
+cor(dat$Variable_1, dat$Variable_4)
+```
+
+
+Let's also model what we just saw
 
 ```{r}
 fit <- lm(Variable_1 ~ Variable_4, data=dat)
